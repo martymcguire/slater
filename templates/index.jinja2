@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <form action="{{ url_for('authorize') }}" method="GET">
+      <input type="text" name="me" placeholder="http://example.com" />
+      <input type="hidden" name="scope" value="post" />
+      <button type="submit">Sign In</button>
+    </form>
+  </body>
+</html>
