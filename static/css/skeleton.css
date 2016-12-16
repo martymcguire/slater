@@ -359,15 +359,15 @@ form {
 
 /* Utilities
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-.u-full-width {
+.ut-full-width {
   width: 100%;
   box-sizing: border-box; }
-.u-max-full-width {
+.ut-max-full-width {
   max-width: 100%;
   box-sizing: border-box; }
-.u-pull-right {
+.ut-pull-right {
   float: right; }
-.u-pull-left {
+.ut-pull-left {
   float: left; }
 
 
