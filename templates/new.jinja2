@@ -1,22 +1,64 @@
-<!DOCTYPE html>
-<html>
-  <body>
-    <p>Posting as {{ me }}</p>
-    <form method="POST" action="{{ endpoint }}" enctype="multipart/form-data">
-      <input type="hidden" name="access_token" value="{{ access_token }}" />
-      <input type="hidden" name="h" value="event" />
-      <div><label for="name">Event Name</label><input type="text" name="name" /></div>
-      <!-- TODO: date/time picker w/ TZ -->
-      <div><label for="start">Start Date/Time</label><input type="text" name="start" placeholder="2016-12-06 19:30-05:00" /></div>
-      <!-- TODO: date/time picker w/ TZ -->
-      <div><label for="end">End Date/Time</label><input type="text" name="end" placeholder="2016-12-06 21:30-05:00" /></div>
-      <!-- TODO: venue picker -->
-      <div><label for="location">Location</label><input type="text" name="location" /></div>
-      <!-- TODO: split on commas, strip whitespace, make into category[] on submit -->
-      <div><label for="category">Categories</label><input type="text" name="category" /></div>
-      <div><label for="photo">Poster Image</label><input type="file" name="photo" /></div>
-      <div><label for="content">Description</label><div><textarea name="content"></textarea></div></div>
-      <div><input type="submit" value="Create Event" /></div>
-    </form>
-  </body>
-</html>
+{% extends "base.jinja2" %}
+
+{% block body %}
+<div class="container">
+  <form method="POST" action="{{ endpoint }}" enctype="multipart/form-data">
+    <input type="hidden" name="access_token" value="{{ access_token }}" />
+    <input type="hidden" name="h" value="event" />
+    <div class="row">
+      <h4>Posting as <strong>{{ me }}</strong></h4>
+    </div>
+    <div class="row">
+      <div class="two-thirds column">
+        <label for="name">Event Name</label>
+        <input type="text" class="ut-full-width" name="name" />
+      </div>
+    </div>
+    <!-- TODO: date/time picker w/ TZ -->
+    <div class="row">
+      <div class="two-thirds column">
+        <label for="start">Start Date/Time</label>
+        <input type="text" class="ut-full-width" name="start" placeholder="2016-12-06 19:30 -05:00" />
+      </div>
+    </div>
+    <!-- TODO: date/time picker w/ TZ -->
+    <div class="row">
+      <div class="two-thirds column">
+        <label for="end">End Date/Time</label>
+        <input type="text" class="ut-full-width" name="end" placeholder="2016-12-06 21:30 -05:00" />
+      </div>
+    </div>
+    <!-- TODO: venue picker -->
+    <div class="row">
+      <div class="two-thirds column">
+        <label for="location">Location</label>
+        <input type="text" class="ut-full-width" name="location" />
+      </div>
+    </div>
+    <!-- TODO: split on commas, strip whitespace, make into category[] on submit -->
+    <div class="row">
+      <div class="two-thirds column">
+        <label for="category">Categories</label>
+        <input type="text" class="ut-full-width" name="category" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="two-thirds column">
+        <label for="photo">Poster Image</label>
+        <input type="file" name="photo" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="two-thirds column">
+        <label for="content">Description</label>
+        <textarea class="ut-full-width" name="content"></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="two-thirds column">
+        <input type="submit" class="button-primary" value="Create Event" />
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
