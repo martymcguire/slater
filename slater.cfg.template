@@ -1,0 +1,2 @@
+SECRET_KEY = 'my super secret key'
+CLIENT_NAME = 'https://localhost:5000'
