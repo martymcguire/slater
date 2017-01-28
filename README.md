@@ -32,7 +32,6 @@ TODOs
 
 So many.
 
-* Move HTML to templates
 * Nice date/time and timezone picker, probably courtesy some http://momentjs.com/ magic.
 * Autocomplete support for locations using ... what? how about a page full of
   h-cards with venue information? http://indieweb.org/venue
