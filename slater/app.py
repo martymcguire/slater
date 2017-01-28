@@ -1,5 +1,6 @@
 from . import extensions
 from .views import views
+from .api import api
 from flask import Flask
 import logging
 import sys
@@ -10,6 +11,7 @@ def create_app(config_path='../slater.cfg'):
     configure_logging(app)
     extensions.init_app(app)
     app.register_blueprint(views)
+    app.register_blueprint(api, url_prefix='/api')
     return app
 
 def configure_logging(app):

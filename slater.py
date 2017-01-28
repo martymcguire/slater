@@ -37,9 +37,7 @@ def micropub_callback(resp):
 @login_required
 def new_event():
     me = session.get('_micropub_me')
-    endpoint = session.get('_micropub_endpoint')
-    access_token = session.get('_micropub_access_token')
-    return render_template('new.jinja2', me=me, endpoint=endpoint, access_token=access_token)
+    return render_template('new.jinja2', me=me)
 
 if __name__ == '__main__':
     app.run(debug=True)
