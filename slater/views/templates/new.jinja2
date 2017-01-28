@@ -1,5 +1,9 @@
 {% extends "base.jinja2" %}
 
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/flatpickr.min.css') }}">
+  <script src="{{ url_for('static', filename='js/flatpickr.js') }}"></script>
+{% endblock %}
 {% block body %}
 <div class="container">
   <form method="POST" action="{{ url_for('api.publish') }}" enctype="multipart/form-data">
@@ -17,14 +21,14 @@
     <div class="row">
       <div class="two-thirds column">
         <label for="start">Start Date/Time</label>
-        <input type="text" class="ut-full-width" name="start" placeholder="2016-12-06 19:30" />
+        <input type="text" class="ut-full-width datetime" name="start" placeholder="2016-12-06 19:30" />
       </div>
     </div>
     <!-- TODO: date/time picker w/ TZ -->
     <div class="row">
       <div class="two-thirds column">
         <label for="end">End Date/Time</label>
-        <input type="text" class="ut-full-width" name="end" placeholder="2016-12-06 21:30" />
+        <input type="text" class="ut-full-width datetime" name="end" placeholder="2016-12-06 21:30" />
       </div>
     </div>
     <!-- TODO: venue picker -->
@@ -64,4 +68,13 @@
     </div>
   </form>
 </div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+  flatpickr("input.datetime", {
+    enableTime: true,
+    altInput: true,
+    altFormat: "F j, Y h:i K"
+  });
+});
+</script>
 {% endblock %}

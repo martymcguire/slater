@@ -7,6 +7,7 @@ api = Blueprint('api', __name__)
 @api.route('/publish', methods=['POST'])
 @login_required
 def publish():
+    endpoint = session.get('_micropub_endpoint')
     # TODO: some validation
     data = request.form.to_dict()
 
@@ -15,8 +16,10 @@ def publish():
 
     headers = { 'Authorization': "Bearer %s" % session.get('_micropub_access_token') }
 
+    return "%s" % ((endpoint, data, headers), )
+
     r = requests.post(
-      session.get('_micropub_endpoint'),
+      endpoint,
       data=data,
       headers=headers
     )
