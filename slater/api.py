@@ -16,11 +16,9 @@ def publish():
 
     headers = { 'Authorization': "Bearer %s" % session.get('_micropub_access_token') }
 
-    return "%s" % ((endpoint, data, headers), )
-
     r = requests.post(
       endpoint,
       data=data,
       headers=headers
     )
-    return "WHAT'S UP BUTTERCUP %s" % r.text
+    return "Server responded: %s" % r.text
