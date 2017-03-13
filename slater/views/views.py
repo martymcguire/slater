@@ -3,7 +3,7 @@ from flask import Blueprint, redirect, render_template, request, session, url_fo
 from ..extensions import micropub
 from ..auth import login_required, login_save_session
 
-views = Blueprint('views', __name__, template_folder='templates')
+views = Blueprint('views', __name__)
 
 @views.route('/')
 def index():
