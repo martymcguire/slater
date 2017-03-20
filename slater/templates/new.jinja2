@@ -2,7 +2,16 @@
 
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/flatpickr.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tokenfield.css') }}">
+  <style id="shame">
+    .tokenfield {
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+  </style>
   <script src="{{ url_for('static', filename='js/flatpickr.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/tokenfield.min.js') }}"></script>
 {% endblock %}
 {% block body %}
 <div class="container">
@@ -42,11 +51,10 @@
         <input type="text" class="util-full-width" name="tzoffset" placeholder="-05:00" />
       </div>
     </div>
-    <!-- TODO: split on commas, strip whitespace, make into category[] on submit -->
     <div class="row">
       <div class="two-thirds column">
         <label for="category">Categories</label>
-        <input type="text" class="util-full-width" name="category" />
+        <input type="text" class="util-full-width" id="category" name="category" />
       </div>
     </div>
     <div class="row">
@@ -74,6 +82,12 @@ document.addEventListener('DOMContentLoaded', function() {
     enableTime: true,
     altInput: true,
     altFormat: "F j, Y h:i K"
+  });
+
+  var tf = new Tokenfield({
+    el: document.getElementById("category"),
+    newItems: true,
+    newItemName: 'category'
   });
 });
 </script>
