@@ -9,6 +9,15 @@
       margin-bottom: 15px;
       overflow: hidden;
     }
+    .syndicate-to-option {
+      background-color: rgba(0,0,0,0.15);
+      border-radius: 0.5rem;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+    }
+    .syndicate-to-option input {
+      margin-bottom: 0;
+    }
   </style>
   <script src="{{ url_for('static', filename='js/flatpickr.js') }}"></script>
   <script src="{{ url_for('static', filename='js/tokenfield.min.js') }}"></script>
@@ -69,6 +78,19 @@
         <textarea class="util-full-width" name="content"></textarea>
       </div>
     </div>
+    {% if config['syndicate-to'] %}
+      <div class="row">
+        <div class="two-thirds column" style="margin-bottom: 2.5rem">
+          <label>Syndicate-To</label>
+          {% for synd in config['syndicate-to'] %}
+          <label class="syndicate-to-option">
+              <input type="checkbox" name="mp-syndicate-to[]" value="{{ synd.uid }}">
+              <span class="label-body">{{ synd.name }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
     <div class="row">
       <div class="two-thirds column">
         <input type="submit" class="button-primary" value="Create Event" />
