@@ -3,29 +3,38 @@ from .auth import login_required
 import requests
 
 api = Blueprint('api', __name__)
+FILE_ATTRS = ('audio','photo','video')
+
+def send_file_to_media_endpoint(f):
+    if 'media-endpoint' in session.get('_micropub_config'):
+        endpoint = session.get('_micropub_config')['media-endpoint']
+    else:
+        # no media endpoint configured
+        return None
+    files = {}
+    if f.filename != '':
+        files['file'] = (f.filename, f.stream, f.mimetype)
+        headers = { 'Authorization': "Bearer %s" % session.get('_micropub_access_token') }
+        current_app.logger.debug(['Media:', endpoint, headers, files])
+        r = requests.post(endpoint, headers=headers, files=files)
+        if (r.status_code == requests.codes.created) or (r.status_code == requests.codes.accepted):
+            return r.headers.get('location')
+        else:
+            current_app.logger.error("Micropub endpoint did not return a Location. %s" % r.text)
+    return None
 
 @api.route('/publish/media', methods=['POST'])
 @login_required
 def publish_media():
-    endpoint = session.get('_micropub_config')['media-endpoint']
-
     # pass along file upload, if present. otherwise fail!
-    files = {}
     if 'file' in request.files:
         f = request.files['file']
-        if f.filename != '':
-            files['file'] = (f.filename, f.stream, f.mimetype)
-            headers = { 'Authorization': "Bearer %s" % session.get('_micropub_access_token') }
-            current_app.logger.debug(['Media:', endpoint, headers, files])
-            r = requests.post(endpoint, headers=headers, files=files)
-            if (r.status_code == requests.codes.created) or (r.status_code == requests.codes.accepted):
-              return jsonify({
-                'location': r.headers.get('location')
-              })
-            else:
-              return jsonify({
-                'error': "Micropub endpoint did not return a Location. %s" % r.text
-              })
+        url = send_file_to_media_endpoint(f)
+        if url is None:
+            return jsonify({ 'error': "Error uploading to media endpoint." })
+        return jsonify({
+            'location': url
+        })
     return jsonify({ 'error': "No file named 'file' was attached." })
 
 @api.route('/publish', methods=['POST'])
@@ -33,24 +42,28 @@ def publish_media():
 def publish():
     endpoint = session.get('_micropub_endpoint')
 
-    # pass along file uploads, if present
-    files = {}
-    for file_key in ['audio','photo']:
-      if file_key in request.files:
-        f = request.files[file_key]
-        if f.filename != '':
-          # TODO: if media endpoint, upload there and replace value w/ URL
-          # otherwise, pass the file along to the micropub endpoint
-          files[file_key] = (f.filename, f.stream, f.mimetype)
-
-    # TODO: data validation?
-
     # iterate over keys to allow multiple values from Flask multidict
     data = {}
     for k in request.form.keys():
       values = request.form.getlist(k)
       if values != ['']:
         data[k] = [v for v in values if v != '']
+
+    # pass along file uploads, if present
+    files = {}
+    for file_key in FILE_ATTRS:
+        if file_key in request.files:
+            f = request.files[file_key]
+            if f.filename != '':
+                url = send_file_to_media_endpoint(f)
+                if url is None:
+                    # Missing or problem sending to media endpoint. Pass along the file.
+                    files[file_key] = (f.filename, f.stream, f.mimetype)
+                    return jsonify({ 'error': "Error uploading to media endpoint." })
+                else:
+                    data[file_key + '[]'] += [url]
+
+    # TODO: data validation?
 
     headers = { 'Authorization': "Bearer %s" % session.get('_micropub_access_token') }
 
