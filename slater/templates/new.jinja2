@@ -4,6 +4,42 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/flatpickr.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/tokenfield.css') }}">
   <style id="shame">
+    [v-cloak] {
+      display: none;
+    }
+
+    .photoPreview {
+      box-shadow: rgba(0,0,0,0.2) 1px 1px 3px;
+      display: inline-block;
+      max-width: 33%;
+      padding: 1rem;
+      position: relative;
+      width: 30%;
+    }
+    .photoPreview > img {
+      width: 100%;
+    }
+    .photoPreview > button {
+      background-color: rgba(255,0,0,0.3);
+      border-radius: 50%;
+      color: white;
+      font-size: 2rem;
+      height: 4rem;
+      margin: 0;
+      opacity: 0;
+      padding: 0;
+      position: absolute;
+      right: -2rem;
+      top: -2rem;
+      width: 4rem;
+    }
+    .photoPreview > button:hover {
+      background-color: rgba(255,0,0,1);
+    }
+    .photoPreview:hover > button {
+      opacity: 1.0;
+    }
+
     .tokenfield {
       box-sizing: border-box;
       margin-bottom: 15px;
@@ -21,9 +57,10 @@
   </style>
   <script src="{{ url_for('static', filename='js/flatpickr.js') }}"></script>
   <script src="{{ url_for('static', filename='js/tokenfield.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/vue.js') }}"></script>
 {% endblock %}
 {% block body %}
-<div class="container">
+<div class="container" id="app">
   <form method="POST" action="{{ url_for('api.publish') }}" enctype="multipart/form-data">
     <input type="hidden" name="h" value="event" />
     <div class="row">
@@ -68,8 +105,28 @@
     </div>
     <div class="row">
       <div class="two-thirds column">
-        <label for="photo">Poster Image URL</label>
-        <input type="text" class="util-full-width" name="photo[]" />
+        <label>Poster Image</label>
+        {% raw %}
+        <div v-if="photos.length > 0" v-cloak style="margin-bottom: 1.5rem">
+          <div v-for="(photo,idx) of photos" class="photoPreview">
+            <img :src="photo" />
+            <button @click.prevent="removePhoto(idx)" title="Remove this photo">x</button>
+            <input type="hidden" name="photo[]" :value="photo" />
+          </div>
+        </div>
+        <div class="row" style="position: relative">
+          <div class="add-file-inputs">
+            <input type="text" class="util-full-width" name="photo[]" @change="addPhotoFromUrl" placeholder="Add Photo via URL" v-model="photoInput" />
+            <div v-if="photoFile" v-cloak style="margin-bottom: 1.5rem">
+              <div class="photoPreview">
+                <img :src="photoFile" />
+                <button @click.prevent="removePhotoFile" title="Remove this photo">x</button>
+              </div>
+            </div>
+            <input class="util-full-width" type="file" name="photo" @change="addPhotoFromFile" ref="photoFileInput" title="Add Photo via Upload"/>
+          </div>
+        </div>
+        {% endraw %}
       </div>
     </div>
     <div class="row">
@@ -110,6 +167,65 @@ document.addEventListener('DOMContentLoaded', function() {
     el: document.getElementById("category"),
     newItems: true,
     newItemName: 'category'
+  });
+  var app = new Vue({
+    el: '#app',
+    data: {
+      'mp-config': {{ config }},
+      'photos': [],
+      'photoFile': null,
+      'photoInput': null
+    },
+    computed: {
+      hasMediaEndpoint: function() {
+        return(this['mp-config']['media-endpoint'] !== undefined)
+      }
+    },
+    methods: {
+      addPhotoFromUrl: function(){
+        this.photos.push(this.photoInput);
+        this.photoInput = null;
+      },
+      addPhotoFromFile: function(event){
+        if (event && event.target.files[0]) {
+          var file = event.target.files[0];
+          this.photoFile = URL.createObjectURL(file);
+          if(this.hasMediaEndpoint) {
+            // Send file to micropub media endpoint
+            var self = this;
+            var formData = new FormData();
+            formData.append('file', file);
+            var request = new XMLHttpRequest();
+            request.open("POST", "{{ url_for('api.publish_media') }}");
+            request.onreadystatechange = function() {
+              if(request.readyState == XMLHttpRequest.DONE) {
+                try {
+                  var response = JSON.parse(request.responseText);
+                  if(response.location) {
+                    self.photos.push(response.location);
+                    self.removePhotoFile();
+                  } else {
+                    console.log("Endpoint did not return a location header", response);
+                  }
+                } catch(e) {
+                  console.log(e);
+                }
+              }
+            }
+            request.send(formData);
+          }
+        } else {
+          this.removePhotoFile();
+        }
+      },
+      removePhoto: function(idx){
+        this.photos.splice(idx,1);
+      },
+      removePhotoFile: function(){
+        this.photoFile = null;
+        this.$refs.photoFileInput.value = null;
+      },
+    }
   });
 });
 </script>
