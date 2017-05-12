@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var app = new Vue({
     el: '#photos',
     data: {
-      'mp-config': {{ config | safe }},
+      'mp-config': {{ config | tojson | safe }},
       'photos': [],
       'photoFile': null,
       'photoInput': null
