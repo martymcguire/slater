@@ -60,7 +60,7 @@
   <script src="{{ url_for('static', filename='js/vue.js') }}"></script>
 {% endblock %}
 {% block body %}
-<div class="container" id="app">
+<div class="container">
   <form method="POST" action="{{ url_for('api.publish') }}" enctype="multipart/form-data">
     <input type="hidden" name="h" value="event" />
     <div class="row">
@@ -103,7 +103,7 @@
         <input type="text" class="util-full-width" id="category" name="category" />
       </div>
     </div>
-    <div class="row">
+    <div class="row" id="photos">
       <div class="two-thirds column">
         <label>Poster Image</label>
         {% raw %}
@@ -169,9 +169,9 @@ document.addEventListener('DOMContentLoaded', function() {
     newItemName: 'category'
   });
   var app = new Vue({
-    el: '#app',
+    el: '#photos',
     data: {
-      'mp-config': {{ config }},
+      'mp-config': {{ config | safe }},
       'photos': [],
       'photoFile': null,
       'photoInput': null

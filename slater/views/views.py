@@ -1,5 +1,4 @@
 from flask import Blueprint, redirect, render_template, request, session, url_for
-from json import dumps
 
 from ..extensions import micropub, micropub_config
 from ..auth import login_required, login_save_session
@@ -35,6 +34,6 @@ def new_event():
       'new.jinja2', me=me,
       endpoint=endpoint,
       access_token=access_token,
-      config=dumps(mp_config)
+      config=mp_config
     )
 
