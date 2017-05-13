@@ -61,99 +61,101 @@
 {% endblock %}
 {% block body %}
 <div class="container">
-  <form method="POST" action="{{ url_for('api.publish') }}" enctype="multipart/form-data">
-    <input type="hidden" name="h" value="event" />
-    <div class="row">
-      <h4>Posting as <strong>{{ me }}</strong></h4>
-    </div>
-    <div class="row">
-      <div class="two-thirds column">
-        <label for="name">Event Name</label>
-        <input type="text" class="util-full-width" name="name" />
-      </div>
-    </div>
-    <!-- TODO: date/time picker w/ TZ -->
-    <div class="row">
-      <div class="two-thirds column">
-        <label for="start">Start Date/Time</label>
-        <input type="text" class="util-full-width datetime" name="start" placeholder="2016-12-06 19:30" />
-      </div>
-    </div>
-    <!-- TODO: date/time picker w/ TZ -->
-    <div class="row">
-      <div class="two-thirds column">
-        <label for="end">End Date/Time</label>
-        <input type="text" class="util-full-width datetime" name="end" placeholder="2016-12-06 21:30" />
-      </div>
-    </div>
-    <!-- TODO: venue picker -->
-    <div class="row">
-      <div class="five columns">
-        <label for="location">Location</label>
-        <input type="text" class="util-full-width" name="location" />
-      </div>
-      <div class="three columns">
-        <label for="tzoffset">Timezone</label>
-        <input type="text" class="util-full-width" name="tzoffset" placeholder="-05:00" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="two-thirds column">
-        <label for="category">Categories</label>
-        <input type="text" class="util-full-width" id="category" name="category" />
-      </div>
-    </div>
-    <div class="row" id="photos">
-      <div class="two-thirds column">
-        <label>Poster Image</label>
-        {% raw %}
-        <div v-if="photos.length > 0" v-cloak style="margin-bottom: 1.5rem">
-          <div v-for="(photo,idx) of photos" class="photoPreview">
-            <img :src="photo" />
-            <button @click.prevent="removePhoto(idx)" title="Remove this photo">x</button>
-            <input type="hidden" name="photo[]" :value="photo" />
-          </div>
-        </div>
-        <div class="row" style="position: relative">
-          <div class="add-file-inputs">
-            <input type="text" class="util-full-width" name="photo[]" @change="addPhotoFromUrl" placeholder="Add Photo via URL" v-model="photoInput" />
-            <div v-if="photoFile" v-cloak style="margin-bottom: 1.5rem">
-              <div class="photoPreview">
-                <img :src="photoFile" />
-                <button @click.prevent="removePhotoFile" title="Remove this photo">x</button>
-              </div>
-            </div>
-            <input class="util-full-width" type="file" name="photo" @change="addPhotoFromFile" ref="photoFileInput" title="Add Photo via Upload"/>
-          </div>
-        </div>
-        {% endraw %}
-      </div>
-    </div>
-    <div class="row">
-      <div class="two-thirds column">
-        <label for="content">Description</label>
-        <textarea class="util-full-width" name="content"></textarea>
-      </div>
-    </div>
-    {% if config['syndicate-to'] %}
+  <div class="two-thirds column">
+    <form method="POST" action="{{ url_for('api.publish') }}" enctype="multipart/form-data">
+      <input type="hidden" name="h" value="event" />
       <div class="row">
-        <div class="two-thirds column" style="margin-bottom: 2.5rem">
-          <label>Syndicate-To</label>
-          {% for synd in config['syndicate-to'] %}
-          <label class="syndicate-to-option">
-              <input type="checkbox" name="mp-syndicate-to[]" value="{{ synd.uid }}">
-              <span class="label-body">{{ synd.name }}</span>
-          </label>
-          {% endfor %}
+        <h4>Posting as <strong>{{ me }}</strong></h4>
+      </div>
+      <div class="row">
+        <div class="util-full-width">
+          <label for="name">Event Name</label>
+          <input type="text" class="util-full-width" name="name" />
         </div>
       </div>
-    {% endif %}
-    <div class="row">
-      <div class="two-thirds column">
-        <input type="submit" class="button-primary" value="Create Event" />
+      <!-- TODO: date/time picker w/ TZ -->
+      <div class="row">
+        <div class="util-full-width">
+          <label for="start">Start Date/Time</label>
+          <input type="text" class="util-full-width datetime" name="start" placeholder="2016-12-06 19:30" />
+        </div>
       </div>
-    </div>
-  </form>
+      <!-- TODO: date/time picker w/ TZ -->
+      <div class="row">
+        <div class="util-full-width">
+          <label for="end">End Date/Time</label>
+          <input type="text" class="util-full-width datetime" name="end" placeholder="2016-12-06 21:30" />
+        </div>
+      </div>
+      <!-- TODO: venue picker -->
+      <div class="row">
+        <div class="seven columns">
+          <label for="location">Location</label>
+          <input type="text" class="util-full-width" name="location" />
+        </div>
+        <div class="five columns">
+          <label for="tzoffset">Timezone</label>
+          <input type="text" class="util-full-width" name="tzoffset" placeholder="-05:00" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="util-full-width">
+          <label for="category">Categories</label>
+          <input type="text" class="util-full-width" id="category" name="category" />
+        </div>
+      </div>
+      <div class="row" id="photos">
+        <div class="util-full-width">
+          <label>Poster Image</label>
+          {% raw %}
+          <div v-if="photos.length > 0" v-cloak style="margin-bottom: 1.5rem">
+            <div v-for="(photo,idx) of photos" class="photoPreview">
+              <img :src="photo" />
+              <button @click.prevent="removePhoto(idx)" title="Remove this photo">x</button>
+              <input type="hidden" name="photo[]" :value="photo" />
+            </div>
+          </div>
+          <div class="row" style="position: relative">
+            <div class="add-file-inputs">
+              <input type="text" class="util-full-width" name="photo[]" @change="addPhotoFromUrl" placeholder="Add Photo via URL" v-model="photoInput" />
+              <div v-if="photoFile" v-cloak style="margin-bottom: 1.5rem">
+                <div class="photoPreview">
+                  <img :src="photoFile" />
+                  <button @click.prevent="removePhotoFile" title="Remove this photo">x</button>
+                </div>
+              </div>
+              <input class="util-full-width" type="file" name="photo" @change="addPhotoFromFile" ref="photoFileInput" title="Add Photo via Upload"/>
+            </div>
+          </div>
+          {% endraw %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="util-full-width">
+          <label for="content">Description</label>
+          <textarea class="util-full-width" name="content"></textarea>
+        </div>
+      </div>
+      {% if config['syndicate-to'] %}
+        <div class="row">
+          <div class="util-full-width" style="margin-bottom: 2.5rem">
+            <label>Syndicate-To</label>
+            {% for synd in config['syndicate-to'] %}
+            <label class="syndicate-to-option">
+                <input type="checkbox" name="mp-syndicate-to[]" value="{{ synd.uid }}">
+                <span class="label-body">{{ synd.name }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+      <div class="row">
+        <div class="util-full-width">
+          <input type="submit" class="button-primary" value="Create Event" />
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function() {
