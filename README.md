@@ -4,6 +4,8 @@ Slater
 Slater is a [micropub](https://www.w3.org/TR/micropub/) client for posting
 [events](https://indieweb.org/event) to your website.
 
+**Notice 2024-10: This project has been superceded by [Slater-PHP](https://git.schmarty.net/schmarty/slater-php).** Please see the new project for updates. This version is no longer maintained.
+
 Quick (&amp; Dirty) Start
 -------------------------
 
